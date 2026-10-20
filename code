@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101610">
+<title>Cube Launcher — Java Edition & Customization</title>
+<style>
+:root{--bg:#0b100d;--panel:#141d16;--panel2:#1a261c;--line:#2b3b2e;--green:#70e879;--green2:#36b84d;--text:#f0f6ef;--muted:#9aa99b;--danger:#ff7777;--accent:#00ffcc}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% -20%,#25472b 0,transparent 45%),var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{max-width:1100px;margin:auto;min-height:100vh;display:grid;grid-template-columns:230px 1fr}
+.sidebar{background:#0e150fdd;border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:24px}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px}.logo{width:43px;height:43px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#9aff8b,#248c37);color:#09200d;font-weight:1000;font-size:22px;box-shadow:0 0 28px #51d45a24}.brand strong{display:block;font-size:17px;letter-spacing:.4px}.brand small{color:var(--muted);font-size:11px;letter-spacing:1.6px}
+.nav{display:grid;gap:6px}.nav button{border:1px solid transparent;color:#aebcaf;background:transparent;text-align:left;padding:12px 13px;border-radius:11px;display:flex;align-items:center;gap:12px}.nav button .ico{width:22px;text-align:center;font-size:17px}.nav button.active{background:#213a25;color:var(--green);border-color:#355b39}.nav button:hover{background:#1b2b1d;color:white}
+.side-bottom{margin-top:auto;border:1px solid var(--line);background:#131c15;border-radius:13px;padding:13px;color:var(--muted);font-size:12px}.status{display:flex;align-items:center;gap:7px;color:#bcecc0;margin-bottom:5px}.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px #70e87988}
+main{padding:25px clamp(16px,3vw,34px) 40px;min-width:0}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:25px}.eyebrow{font-size:11px;letter-spacing:2px;color:var(--green);font-weight:800}.topbar h1{font-size:26px;margin:3px 0 0;letter-spacing:-.7px}.profile{display:flex;align-items:center;gap:10px;background:#172119;border:1px solid var(--line);padding:7px 11px;border-radius:12px}.avatar{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,#83f17d,#347a41);display:grid;place-items:center;color:#09210e;font-weight:900}.profile small{display:block;color:var(--muted);font-size:11px}
+.hero{position:relative;overflow:hidden;border:1px solid #36563a;border-radius:20px;padding:clamp(22px,4vw,38px);background:linear-gradient(105deg,#172b1b 0%,#142018 55%,#102015 100%);min-height:235px;display:flex;align-items:center;margin-bottom:18px}
+.hero:before{content:"";position:absolute;width:250px;height:250px;right:5%;top:-35px;opacity:.24;background:linear-gradient(135deg,#9aff8b,#227d35);clip-path:polygon(25% 6%,75% 6%,100% 50%,75% 94%,25% 94%,0 50%);filter:drop-shadow(0 0 24px #70e879)}
+.hero:after{content:"";position:absolute;width:140px;height:140px;right:17%;top:48px;opacity:.18;border:12px solid #9aff8b;transform:rotate(45deg)}
+.hero-content{position:relative;z-index:1;max-width:520px}.hero h2{font-size:clamp(27px,4vw,42px);line-height:1.05;margin:10px 0 12px;letter-spacing:-1.2px}.hero p{color:#b5c7b7;max-width:440px;margin:0 0 21px}.tag{display:inline-flex;align-items:center;gap:7px;background:#2a492d;color:#b8ffbd;border:1px solid #3f6b43;border-radius:7px;padding:5px 9px;font-size:11px;font-weight:800;letter-spacing:1px}
+.actions{display:flex;gap:10px;flex-wrap:wrap}.btn{border:1px solid var(--line);border-radius:10px;padding:11px 15px;color:var(--text);background:#1b281d;font-weight:750}.btn.primary{background:var(--green);border-color:var(--green);color:#09200d;box-shadow:0 5px 20px #70e87920}.btn.primary:hover{background:#8cf793}.btn:hover{filter:brightness(1.12)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px}.panel{background:linear-gradient(145deg,#151f17,#111812);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}.panel h3{margin:0;font-size:15px}.muted{color:var(--muted);font-size:12px}.version-row{display:flex;align-items:center;gap:12px}.cube-icon{width:46px;height:46px;border-radius:12px;background:#243a27;display:grid;place-items:center;font-size:23px;transition:all 0.3s}.version-row strong{display:block}.version-row small{color:var(--muted)}.version-select{margin-top:15px;width:100%;background:#0d140f;border:1px solid #344837;color:white;padding:12px;border-radius:9px;outline:none}.progress-wrap{margin-top:15px}.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:7px}.progress{height:6px;border-radius:9px;background:#273329;overflow:hidden}.progress span{display:block;width:0;height:100%;background:var(--green);transition:width .35s}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#101711;border:1px solid #253329;border-radius:12px;padding:13px}.stat strong{font-size:22px;display:block}.stat small{color:var(--muted);font-size:11px}
+.quick-list{display:grid;gap:10px}.quick{display:flex;align-items:center;gap:11px;padding:10px;background:#101711;border:1px solid #26352a;border-radius:11px}.quick .qicon{width:37px;height:37px;display:grid;place-items:center;background:#203323;border-radius:9px;font-size:18px}.quick strong{font-size:13px;display:block}.quick small{font-size:11px;color:var(--muted)}
+.page{display:none}.page.active{display:block}.page-intro{margin:-13px 0 18px;color:var(--muted);font-size:13px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.item{background:#141d16;border:1px solid var(--line);border-radius:14px;padding:15px;min-width:0}.item-top{display:flex;align-items:center;gap:11px;margin-bottom:10px}.item-icon{width:43px;height:43px;border-radius:11px;background:#243a27;display:grid;place-items:center;font-size:21px;flex-shrink:0}.item strong{display:block}.item small{color:var(--muted)}.item p{color:#b4c0b5;font-size:12px;min-height:35px}.item .btn{width:100%;padding:9px;font-size:12px}.section-bar{display:flex;gap:10px;align-items:center;margin-bottom:15px;flex-wrap:wrap}.search{flex:1;min-width:170px;background:#0d140f;border:1px solid var(--line);color:white;border-radius:9px;padding:11px 12px;outline:none}.empty{padding:35px 15px;text-align:center;color:var(--muted);border:1px dashed #354537;border-radius:13px}.empty b{display:block;color:var(--text);margin-bottom:5px}
+
+/* Новые стили: Скины */
+.skins-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; margin-top: 15px; }
+.skin-card { background: rgba(255, 255, 255, 0.03); border: 2px solid var(--line); border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+.skin-card:hover { border-color: var(--green); transform: translateY(-3px); }
+.skin-card.selected { border-color: var(--green); background: rgba(112, 232, 121, 0.1); box-shadow: 0 0 15px rgba(112, 232, 121, 0.2); }
+.skin-preview-box { width: 50px; height: 50px; margin: 0 auto 10px; border-radius: 10px; }
+
+/* Новые стили: Среда Java */
+.java-container { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+.java-editor { width: 100%; height: 160px; background: #0f1410; color: #70e879; font-family: 'Courier New', Courier, monospace; padding: 12px; border: 1px solid var(--line); border-radius: 9px; resize: vertical; font-size: 13px; outline: none; }
+.java-console { background: #070a08; color: #affeb3; font-family: 'Courier New', Courier, monospace; padding: 12px; border: 1px solid #1f2e22; border-radius: 9px; height: 110px; overflow-y: auto; font-size: 12px; white-space: pre-wrap; }
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#e8ffeb;color:#102114;border-radius:10px;padding:11px 16px;font-weight:750;box-shadow:0 8px 35px #0008;transition:.25s;z-index:10;max-width:calc(100vw - 24px);text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
+.mobile-nav{display:none}
+footer{margin-top:20px;color:#68796a;font-size:11px;text-align:center}
+@media(max-width:760px){.app{display:block;padding-bottom:76px}.sidebar{display:none}main{padding:18px 14px 28px}.topbar{margin-bottom:17px}.topbar h1{font-size:22px}.profile .profile-name{display:none}.hero{min-height:255px;padding:23px}.hero:before{right:-65px;top:10px;width:180px;height:180px}.hero:after{right:2%;top:82px;width:90px;height:90px}.hero-content{max-width:88%}.hero p{font-size:13px}.grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.stat-row{gap:7px}.stat{padding:10px}.stat strong{font-size:19px}.mobile-nav{position:fixed;z-index:5;bottom:0;left:0;right:0;display:flex;overflow-x:auto;justify-content:space-around;background:#0c130eee;border-top:1px solid var(--line);padding:7px 5px calc(7px + env(safe-area-inset-bottom));backdrop-filter:blur(14px)}.mobile-nav button{border:0;background:transparent;color:#94a396;font-size:10px;padding:5px 9px;min-width:62px;display:grid;justify-items:center;gap:3px;flex:1}.mobile-nav button span{font-size:18px}.mobile-nav button.active{color:var(--green)}.page-intro{margin-top:-10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo" id="brand-logo">C</div><div><strong>CUBE LAUNCHER</strong><small>JAVA EDITION</small></div></div>
+  <nav class="nav" aria-label="Главная навигация">
+    <button class="active" data-page="home"><span class="ico">⌂</span>Главная</button>
+    <button data-page="versions"><span class="ico">▦</span>Версии</button>
+    <button data-page="mods"><span class="ico">✧</span>Моды</button>
+    <button data-page="loaders"><span class="ico">⚙</span>Ядра модов</button>
+    <button data-page="skins-wardrobe"><span class="ico">▣</span>Система скинов</button>
+    <button data-page="java-env"><span class="ico">⚡</span>Среда Java</button>
+    <button data-page="peripherals"><span class="ico">⌨</span>Управление</button>
+    <button data-page="friends"><span class="ico">♧</span>Друзья</button>
+  </nav>
+  <div class="side-bottom"><div class="status"><span class="dot"></span>Системы активны</div>Кастомизация & JVM готовы</div>
+</aside>
+<main>
+  <header class="topbar"><div><div class="eyebrow">ТВОЙ МИР. ТВОИ ПРАВИЛА.</div><h1 id="page-title">Главная</h1></div><div class="profile"><div class="avatar" id="profile-avatar">C</div><div class="profile-name"><strong>CubePlayer</strong><small>Локальный профиль</small></div></div></header>
+  
+  <section class="page active" id="page-home">
+    <div class="hero"><div class="hero-content"><span class="tag">▰ MINECRAFT JAVA</span><h2>Твой следующий<br>мир начинается здесь.</h2><p>Выбирай версию, настраивай скины и запускай среду Java в своём стиле.</p><div class="actions"><button class="btn primary" id="play-btn">▶　Запустить игру</button><button class="btn" data-goto="versions">Выбрать версию</button></div></div></div>
+    <div class="grid">
+      <div class="panel"><div class="panel-head"><h3>Текущая сборка</h3><span class="tag">DEMO</span></div><div class="version-row"><div class="cube-icon" id="main-cube-icon">▦</div><div><strong id="current-version">Minecraft 1.21.1</strong><small id="current-java">Vanilla · требуется Java 21</small></div></div><select class="version-select" id="home-version"><option>1.21.11</option><option>1.21.10</option><option>1.21.9</option><option>1.21.8</option><option>1.21.7</option><option>1.21.6</option><option>1.21.5</option><option>1.21.4</option><option>1.21.3</option><option>1.21.2</option><option>1.21.1</option><option>1.20.6</option><option>1.20.4</option><option>1.20.1</option><option>1.19.4</option><option>1.18.2</option><option>1.17.1</option><option>1.16.5</option><option>1.12.2</option><option>1.8.9</option><option>1.7.10</option></select><div class="progress-wrap"><div class="progress-label"><span>Подготовка</span><span id="progress-text">Ожидание</span></div><div class="progress"><span id="progress-bar"></span></div></div></div>
+      <div class="panel"><div class="panel-head"><h3>Твой лаунчер</h3><span class="muted">Сводка</span></div><div class="stat-row"><div class="stat"><strong id="mod-count">3</strong><small>Модов</small></div><div class="stat"><strong id="version-count">47</strong><small>Версий</small></div><div class="stat"><strong id="skin-count">5</strong><small>Скинов</small></div></div><div class="quick-list" style="margin-top:13px"><div class="quick" onclick="go('skins-wardrobe')" style="cursor:pointer"><div class="qicon">▣</div><div><strong>Гардероб скинов</strong><small>Изменить стиль куба</small></div></div><div class="quick" onclick="go('java-env')" style="cursor:pointer"><div class="qicon">⚡</div><div><strong>Консоль Java</strong><small>Запуск JVM скриптов</small></div></div></div></div>
+    </div>
+  </section>
+
+  <!-- Вкладка: Система скинов -->
+  <section class="page" id="page-skins-wardrobe">
+    <p class="page-intro">Выбирай уникальные визуальные стили и цвета для своего лаунчера и игрового куба.</p>
+    <div class="panel">
+      <h3>Коллекция скинов</h3>
+      <div class="skins-grid" id="skinsGrid"></div>
+    </div>
+  </section>
+
+  <!-- Вкладка: Среда Java -->
+  <section class="page" id="page-java-env">
+    <p class="page-intro">Среда выполнения и симулятор Java (JVM) для проверки кода, скриптов и подготовки к запуску Minecraft.</p>
+    <div class="panel">
+      <h3>Интерактивная среда JVM</h3>
+      <div class="java-container">
+        <label for="javaCodeInput" class="muted">Редактор кода (Java):</label>
+        <textarea id="javaCodeInput" class="java-editor">public class CubeLauncherEnv {
+    public static void main(String[] args) {
+        System.out.println("JVM запущен успешно! Окружение готово к работе с Minecraft Java.");
+    }
+}</textarea>
+        <button class="btn primary" onclick="runJavaCode()">▶ Скомпилировать и запустить</button>
+        
+        <label class="muted">Вывод консоли:</label>
+        <div id="javaConsoleOutput" class="java-console">> Среда Java инициализирована (OpenJDK Core v21). Готова к работе.\n</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="page-versions">
+    <p class="page-intro">Выбери версию Minecraft и посмотри, какая версия Java требуется.</p>
+    <div class="section-bar"><input class="search" id="version-search" placeholder="Поиск версии…"><select class="search" id="java-filter" style="flex:0 1 170px"><option value="all">Любая Java</option><option>Java 8</option><option>Java 16</option><option>Java 17</option><option>Java 21</option><option>Java 25</option></select></div>
+    <div class="cards" id="version-cards"></div>
+  </section>
+
+  <section class="page" id="page-mods">
+    <p class="page-intro">Каталог модов для сборки.</p>
+    <div class="section-bar"><input class="search" id="mod-search" placeholder="Поиск модов…"><select class="search" id="mod-filter" style="flex:0 1 150px"><option value="all">Все категории</option><option value="Оптимизация">Оптимизация</option><option value="Библиотека">Библиотеки</option><option value="Интерфейс">Интерфейс</option></select></div>
+    <div class="cards" id="mod-cards"></div>
+  </section>
+
+  <section class="page" id="page-friends">
+    <p class="page-intro">Список друзей и сетевые функции.</p>
+    <div class="section-bar"><input class="search" id="friend-input" placeholder="Имя игрока"><button class="btn primary" id="add-friend">＋ Добавить</button></div>
+    <div class="cards" id="friend-cards"></div>
+  </section>
+
+  <section class="page" id="page-loaders">
+    <p class="page-intro">Установка загрузчиков модов.</p>
+    <div class="cards">
+      <article class="item"><div class="item-top"><div class="item-icon">🧵</div><div><strong>Fabric</strong><small>Лёгкий загрузчик</small></div></div><p>Современные оптимизационные моды.</p><button class="btn primary" data-loader="Fabric">Установить</button></article>
+      <article class="item"><div class="item-top"><div class="item-icon">🔨</div><div><strong>Forge</strong><small>Классика</small></div></div><p>Крупные модпаки.</p><button class="btn primary" data-loader="Forge">Установить</button></article>
+    </div>
+    <div class="panel" style="margin-top:15px"><div class="panel-head"><h3>Выбранный загрузчик</h3><span class="tag">DEMO</span></div><div id="loader-status" class="muted">Ничего не установлено.</div></div>
+  </section>
+
+  <section class="page" id="page-peripherals">
+    <p class="page-intro">Управление и внешние устройства на Android.</p>
+    <div class="cards">
+      <article class="item"><div class="item-top"><div class="item-icon">⌨️</div><div><strong>Клавиатура</strong></div></div><p>Подключение по Bluetooth/USB.</p><button class="btn" data-peripheral="keyboard">Проверить</button></article>
+      <article class="item"><div class="item-top"><div class="item-icon">📱</div><div><strong>Сенсор</strong></div></div><p>Экранные элементы управления.</p><button class="btn" data-peripheral="touch">Настроить</button></article>
+    </div>
+    <div class="panel" style="margin-top:15px"><div class="panel-head"><h3>Статус</h3><span class="tag">ДЕМО</span></div><div id="peripheral-status" class="muted">Ожидание проверки ввода.</div></div>
+  </section>
+
+  <footer>Cube Launcher · Java Edition & Features Extension</footer>
+</main>
+</div>
+
+<nav class="mobile-nav" aria-label="Нижняя навигация">
+  <button class="active" data-page="home"><span>⌂</span>Главная</button>
+  <button data-page="versions"><span>▦</span>Версии</button>
+  <button data-page="skins-wardrobe"><span>▣</span>Скины</button>
+  <button data-page="java-env"><span>⚡</span>Java</button>
+  <button data-page="friends"><span>♧</span>Друзья</button>
+</nav>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const titles = {home:"Главная", versions:"Версии", mods:"Моды", loaders:"Ядра модов", "skins-wardrobe":"Система скинов", "java-env":"Среда Java", peripherals:"Управление", friends:"Друзья"};
+const versions = ["26.1","1.21.11","1.21.10","1.21.9","1.21.8","1.21.7","1.21.6","1.21.5","1.21.4","1.21.3","1.21.2","1.21.1","1.20.6","1.20.4","1.20.1","1.19.4","1.18.2","1.17.1","1.16.5","1.12.2","1.8.9","1.7.10"];
+const javaByVersion = {"26.1":"Java 25","1.21.11":"Java 21","1.21.10":"Java 21","1.21.9":"Java 21","1.21.8":"Java 21","1.21.7":"Java 21","1.21.6":"Java 21","1.21.5":"Java 21","1.21.4":"Java 21","1.21.3":"Java 21","1.21.2":"Java 21","1.21.1":"Java 21","1.20.6":"Java 21","1.20.4":"Java 17","1.20.1":"Java 17","1.19.4":"Java 17","1.18.2":"Java 17","1.17.1":"Java 16","1.16.5":"Java 8","1.12.2":"Java 8","1.8.9":"Java 8","1.7.10":"Java 8"};
+const mods = [{id:"sodium",name:"Sodium",category:"Оптимизация",icon:"⚡",desc:"Улучшение производительности.",version:"1.21.x"},{id:"fabric-api",name:"Fabric API",category:"Библиотека",icon:"🧩",desc:"Базовая библиотека модов.",version:"1.21.x"}];
+let friends = [{name:"BlockFox",status:"В сети",initial:"B"}];
+const installed = new Set();
+
+function toast(msg) {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
+}
+
+function go(page) {
+    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === "page-" + page));
+    document.querySelectorAll("[data-page]").forEach(b => b.classList.toggle("active", b.dataset.page === page));
+    document.getElementById("page-title").textContent = titles[page] || "Лаунчер";
+    window.scrollTo({top: 0, be
